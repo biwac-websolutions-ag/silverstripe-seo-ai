@@ -2,12 +2,11 @@
 
 namespace PlasticStudio\SEOAI\Extensions;
 
-use SilverStripe\Core\Config\Config;
 use voku\helper\HtmlDomParser;
 use SilverStripe\Core\Extension;
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\ORM\ValidationException;
-
+use SilverStripe\Core\Validation\ValidationException;
 class SeoAICMSPageEditControllerExtension extends Extension
 {
 
@@ -27,12 +26,20 @@ class SeoAICMSPageEditControllerExtension extends Extension
 
     public function generateTags()
     {
-        if ($this->owner->currentPage()->stagesDiffer('Stage', 'Live')){
+        $pageID = (int) ($_GET['ID'] ?? 0);
+        $page = $pageID ? SiteTree::get()->byID($pageID) : null;
+        
+        if (!$page || !$page->exists()) {
+            throw new ValidationException('No page available');
+        }
+
+        if ($page->stagesDiffer('Stage', 'Live')){
             throw new ValidationException('Publish the page first for accurate tag generation');
         }
-        $prompt = $this->generatePrompt();
+        
+        $prompt = $this->generatePrompt($page);
         $response = $this->promptAPICall($prompt);
-        $this->populateMetaTagsFromAPI($response);
+        $this->populateMetaTagsFromAPI($response, $page);
 
 
         $this->owner->redirectBack();
@@ -43,10 +50,9 @@ class SeoAICMSPageEditControllerExtension extends Extension
      *
      * @return String
      */
-    public function generatePrompt()
+    public function generatePrompt($page)
     {
         // Get the content for the current page
-        $page = $this->owner->currentPage();
         $pageLink = $page->AbsoluteLink();
 
         // Get brand context
@@ -157,8 +163,6 @@ class SeoAICMSPageEditControllerExtension extends Extension
 
         $response = curl_exec($ch);
 
-        curl_close($ch);
-
         $data = json_decode($response, true);
 
         return $data["choices"][0]["message"]["content"];
@@ -170,15 +174,19 @@ class SeoAICMSPageEditControllerExtension extends Extension
      *
      * @return Boolean
      */
-    public function populateMetaTagsFromAPI($response)
+    public function populateMetaTagsFromAPI($response, $page)
     {
         $metaTags = json_decode($response, true);
 
         if ($metaTags) {
 
-            $page = $this->owner->currentPage();
             $page->MetaTitle = $metaTags["metaTitle"] ?? '';
-            $page->MetaDescription = $metaTags["metaDescription"] ?? '';
+
+            // check if the meta description exceeds 160 characters and truncate if necessary
+            $metaDescription = $metaTags['metaDescription'] ?? '';
+            $metaDescription = mb_substr($metaDescription, 0, 160); // Limit to 160 characters
+            $metaDescription = rtrim($metaDescription);
+            $page->MetaDescription = $metaDescription;
 
             $page->GenerateTags = false;
             $page->write();

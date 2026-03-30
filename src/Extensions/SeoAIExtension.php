@@ -16,7 +16,7 @@ class SeoAIExtension extends Extension
 
     public function updateCMSFields(FieldList $fields)
     {
-        $fields->insertBefore('MetaTitle', CompositeField::create(CmsInlineFormAction::create('generateTags', 'Generate SEO Tags')
+        $fields->insertBefore('MetaTitle', CompositeField::create(CmsInlineFormAction::create('generateTags?ID=' . $this->owner->ID, 'Generate SEO Tags')
                 ->addExtraClass('generate-seo-button')
             )
             ->setDescription('NOTE: Publish the page before generating. The results are generated from the published page to ensure accuracy.')
