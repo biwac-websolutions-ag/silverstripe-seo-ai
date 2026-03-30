@@ -181,7 +181,12 @@ class SeoAICMSPageEditControllerExtension extends Extension
         if ($metaTags) {
 
             $page->MetaTitle = $metaTags["metaTitle"] ?? '';
-            $page->MetaDescription = $metaTags["metaDescription"] ?? '';
+
+            // check if the meta description exceeds 160 characters and truncate if necessary
+            $metaDescription = $metaTags['metaDescription'] ?? '';
+            $metaDescription = mb_substr($metaDescription, 0, 160); // Limit to 160 characters
+            $metaDescription = rtrim($metaDescription);
+            $page->MetaDescription = $metaDescription;
 
             $page->GenerateTags = false;
             $page->write();
