@@ -1,0 +1,33 @@
+it:
+  PlasticStudio\SEOAI\Extensions\SeoAIExtension:
+    GENERATE_SEO_TAGS: 'Genera dati SEO'
+    GENERATE_SEO_TAGS_DESCRIPTION: 'NOTA: Pubblica la pagina prima della generazione. I risultati vengono generati sulla base della pagina pubblicata per ottenere risultati il più accurati possibile.'
+  PlasticStudio\SEO\Model\Extension\SeoPageExtension:
+    SEO_NOTICE: 'Attenzione: i dati SEO non sono ancora completi. Controlla le informazioni nelle impostazioni SEO.'
+    SEO_SETTINGS: 'Impostazioni SEO'
+    META_TITLE: 'Titolo meta'
+    META_TITLE_DESCRIPTION: 'Inserisci un titolo meta univoco e, se possibile, utilizza la parola chiave più importante. Max. 60 caratteri.'
+    META_TITLE_EMPTY_WARNING: 'Il titolo meta è vuoto. Se non viene inserito nulla, verrà utilizzato il titolo della pagina (%s).'
+    META_DESCRIPTION: 'Meta descrizione'
+    META_DESCRIPTION_DESCRIPTION: 'Inserisci un breve riassunto del contenuto della pagina. Max. 160 caratteri.'
+    META_DESCRIPTION_EMPTY_WARNING: 'La meta descrizione non dovrebbe essere vuota.'
+    LAST_EDITED: 'Ultima modifica: %s'
+    SOCIAL_IMAGE: 'Immagine per i social media'
+    SOCIAL_IMAGE_DESCRIPTION: 'Questa immagine viene utilizzata quando la pagina viene condivisa sulle piattaforme di social media. Dimensione consigliata: 1200x630px.'
+    USING_PAGE_TITLE: 'Viene utilizzato il titolo della pagina'
+    USING_PAGE_SUMMARY: 'Viene utilizzo il riassunto della pagina'
+    USING_FEATURED_IMAGE: 'Viene utilizzata l’immagine in evidenza della pagina'
+  PlasticStudio\SEOAI\Extensions\SeoDataObjectExtension:
+    SEO_NOTICE: 'Attenzione: i dati SEO non sono ancora completi. Controlla le informazioni nelle impostazioni SEO.'
+    SEO_SETTINGS: 'Impostazioni SEO'
+    META_TITLE: 'Titolo meta'
+    META_TITLE_DESCRIPTION: 'Inserisci un titolo meta univoco e, se possibile, utilizza la parola chiave più importante. Max. 60 caratteri.'
+    META_TITLE_EMPTY_WARNING: 'Il titolo meta è vuoto. Se non viene inserito nulla, verrà utilizzato il titolo (%s).'
+    META_DESCRIPTION: 'Meta descrizione'
+    META_DESCRIPTION_DESCRIPTION: 'Inserisci un breve riassunto del contenuto. Max. 160 caratteri.'
+    META_DESCRIPTION_EMPTY_WARNING: 'La meta descrizione non dovrebbe essere vuota.'
+    LAST_EDITED: 'Ultima modifica: %s'
+    SOCIAL_IMAGE: 'Immagine per i social media'
+    SOCIAL_IMAGE_DESCRIPTION: 'Questa immagine viene utilizzata quando il contenuto viene condiviso sulle piattaforme di social media. Dimensione consigliata: 1200x630px.'
+  PlasticStudio\SEOAI\Extensions\SeoAIGridFieldDetailFormExtension:
+    GENERATE_SEO_TAGS: 'Genera dati SEO'

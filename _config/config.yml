@@ -1,6 +1,18 @@
 ---
 Name: Silverstripe SEO AI Configuration
 ---
+SilverStripe\Core\Injector\Injector:
+  PlasticStudio\SEOAI\Extensions\SeoAICMSPageEditControllerExtension:
+    properties:
+      openaiKey: '`OPENAI_API_KEY`'
+      model: '`OPENAI_MODEL`'
+      temperature: 0
+
+  PlasticStudio\SEOAI\Extensions\SeoDataObjectExtension:
+    properties:
+      openaiKey: '`OPENAI_API_KEY`'
+      model: '`OPENAI_MODEL`'
+      temperature: 0
 
 Page:
   extensions:
@@ -17,3 +29,9 @@ Silverstripe\CMS\Controllers\CMSPageEditController:
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - plasticstudio/silverstripe-seo-ai:client/css/generate-button.css
+  extra_requirements_javascript:
+    - plasticstudio/silverstripe-seo-ai:client/js/seo-ai.js
+
+SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
+  extensions:
+    - PlasticStudio\SEOAI\Extensions\SeoAIGridFieldDetailFormExtension

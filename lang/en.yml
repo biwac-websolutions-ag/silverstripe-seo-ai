@@ -1,0 +1,33 @@
+en:
+  PlasticStudio\SEOAI\Extensions\SeoAIExtension:
+    GENERATE_SEO_TAGS: 'Generate SEO data'
+    GENERATE_SEO_TAGS_DESCRIPTION: 'NOTE: Publish the page before generation. The results are generated based on the published page to achieve the most accurate outcome possible.'
+  PlasticStudio\SEO\Model\Extension\SeoPageExtension:
+    SEO_NOTICE: 'Attention: The SEO data is not complete yet. Please check the details in the SEO settings.'
+    SEO_SETTINGS: 'SEO settings'
+    META_TITLE: 'Meta title'
+    META_TITLE_DESCRIPTION: 'Enter a unique meta title and, if possible, use the most important keyword. Max. 60 characters.'
+    META_TITLE_EMPTY_WARNING: 'The meta title is empty. If nothing is entered, the page title (%s) will be used.'
+    META_DESCRIPTION: 'Meta description'
+    META_DESCRIPTION_DESCRIPTION: 'Enter a short summary of the page content. Max. 160 characters.'
+    META_DESCRIPTION_EMPTY_WARNING: 'The meta description should not be empty.'
+    LAST_EDITED: 'Last edited: %s'
+    SOCIAL_IMAGE: 'Social media image'
+    SOCIAL_IMAGE_DESCRIPTION: 'This image is used when the page is shared on social media platforms. Recommended size: 1200x630px.'
+    USING_PAGE_TITLE: 'Using page title'
+    USING_PAGE_SUMMARY: 'Using page summary'
+    USING_FEATURED_IMAGE: 'Using page featured image'
+  PlasticStudio\SEOAI\Extensions\SeoDataObjectExtension:
+    SEO_NOTICE: 'Attention: The SEO data is not complete yet. Please check the details in the SEO settings.'
+    SEO_SETTINGS: 'SEO settings'
+    META_TITLE: 'Meta title'
+    META_TITLE_DESCRIPTION: 'Enter a unique meta title and, if possible, use the most important keyword. Max. 60 characters.'
+    META_TITLE_EMPTY_WARNING: 'The meta title is empty. If nothing is entered, the title (%s) will be used.'
+    META_DESCRIPTION: 'Meta description'
+    META_DESCRIPTION_DESCRIPTION: 'Enter a short summary of the content. Max. 160 characters.'
+    META_DESCRIPTION_EMPTY_WARNING: 'The meta description should not be empty.'
+    LAST_EDITED: 'Last edited: %s'
+    SOCIAL_IMAGE: 'Social media image'
+    SOCIAL_IMAGE_DESCRIPTION: 'This image is used when the content is shared on social media platforms. Recommended size: 1200x630px.'
+  PlasticStudio\SEOAI\Extensions\SeoAIGridFieldDetailFormExtension:
+    GENERATE_SEO_TAGS: 'Generate SEO data'

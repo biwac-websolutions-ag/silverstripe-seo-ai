@@ -1,0 +1,33 @@
+de:
+  PlasticStudio\SEOAI\Extensions\SeoAIExtension:
+    GENERATE_SEO_TAGS: 'SEO Daten generieren'
+    GENERATE_SEO_TAGS_DESCRIPTION: 'HINWEIS: Veröffentliche die Seite vor der Generierung. Die Ergebnisse werden anhand der veröffentlichten Seite generiert, um möglichst genaue Resultate zu erhalten.'
+  PlasticStudio\SEO\Model\Extension\SeoPageExtension:
+    SEO_NOTICE: 'Achtung: Bitte fülle die SEO-Felder in den SEO Einstellungen aus.'
+    SEO_SETTINGS: 'SEO Einstellungen'
+    META_TITLE: 'Meta Titel'
+    META_TITLE_DESCRIPTION: 'Gib einen eindeutigen Meta Titel ein und verwende nach Möglichkeit das wichtigste Keyword. Max. 60 Zeichen.'
+    META_TITLE_EMPTY_WARNING: 'Der Meta Titel ist leer. Falls nichts eingetragen wird, wird der Seitentitel (%s) verwendet.'
+    META_DESCRIPTION: 'Meta Beschreibung'
+    META_DESCRIPTION_DESCRIPTION: 'Gib eine kurze Zusammenfassung des Seiteninhalts ein. Max. 160 Zeichen.'
+    META_DESCRIPTION_EMPTY_WARNING: 'Die Meta Beschreibung sollte nicht leer sein.'
+    LAST_EDITED: 'Zuletzt bearbeitet: %s'
+    SOCIAL_IMAGE: 'Social Media Bild'
+    SOCIAL_IMAGE_DESCRIPTION: 'Dieses Bild wird verwendet, wenn die Seite auf Social Media Plattformen geteilt wird. Empfohlene Grösse: 1200x630px.'
+    USING_PAGE_TITLE: 'Seitentitel wird verwendet'
+    USING_PAGE_SUMMARY: 'Seitenzusammenfassung wird verwendet'
+    USING_FEATURED_IMAGE: 'Beitragsbild der Seite wird verwendet'
+  PlasticStudio\SEOAI\Extensions\SeoDataObjectExtension:
+    SEO_NOTICE: 'Achtung: Bitte fülle die SEO-Felder in den SEO Einstellungen aus.'
+    SEO_SETTINGS: 'SEO Einstellungen'
+    META_TITLE: 'Meta Titel'
+    META_TITLE_DESCRIPTION: 'Gib einen eindeutigen Meta Titel ein und verwende nach Möglichkeit das wichtigste Keyword. Max. 60 Zeichen.'
+    META_TITLE_EMPTY_WARNING: 'Der Meta Titel ist leer. Falls nichts eingetragen wird, wird der Titel (%s) verwendet.'
+    META_DESCRIPTION: 'Meta Beschreibung'
+    META_DESCRIPTION_DESCRIPTION: 'Gib eine kurze Zusammenfassung des Inhalts ein. Max. 160 Zeichen.'
+    META_DESCRIPTION_EMPTY_WARNING: 'Die Meta Beschreibung sollte nicht leer sein.'
+    LAST_EDITED: 'Zuletzt bearbeitet: %s'
+    SOCIAL_IMAGE: 'Social Media Bild'
+    SOCIAL_IMAGE_DESCRIPTION: 'Dieses Bild wird verwendet, wenn der Inhalt auf Social Media Plattformen geteilt wird. Empfohlene Grösse: 1200x630px.'
+  PlasticStudio\SEOAI\Extensions\SeoAIGridFieldDetailFormExtension:
+    GENERATE_SEO_TAGS: 'SEO Daten generieren'
