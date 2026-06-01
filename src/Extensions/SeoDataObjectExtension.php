@@ -287,7 +287,6 @@ class SeoDataObjectExtension extends SeoPageExtension {
 		$html = curl_exec($ch);
 		$curlError = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
 
 		if ($html === false || empty($html)) {
 			throw new ValidationException('Seiteninhalt konnte nicht geladen werden. cURL-Fehler: ' . $curlError . ' | Link: ' . $link);
@@ -398,7 +397,6 @@ class SeoDataObjectExtension extends SeoPageExtension {
 		}
 
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
 
 		$data = json_decode($response, true);
 
