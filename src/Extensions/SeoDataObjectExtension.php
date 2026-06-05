@@ -70,7 +70,7 @@ class SeoDataObjectExtension extends SeoPageExtension {
 			);
 		}
 
-		$title = TextField::create('MetaTitle', _t(__CLASS__ . '.META_TITLE', 'Meta title'))->setMaxLength(60);
+		$title = TextField::create('MetaTitle', _t(__CLASS__ . '.META_TITLE', 'Meta title'));
 
 		if (!$this->owner->MetaTitle) {
 			$fallbackTitle = $this->owner->hasField('Title') ? $this->owner->Title : '';
