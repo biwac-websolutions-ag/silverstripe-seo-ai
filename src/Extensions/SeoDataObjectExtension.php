@@ -7,6 +7,7 @@ use PlasticStudio\SEO\Admin\SEOAdmin;
 use PlasticStudio\SEO\Forms\MetaPreviewField;
 use PlasticStudio\SEO\Model\Extension\SeoPageExtension;
 use PlasticStudio\SEO\Schema\Builder\SchemaBuilder;
+use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -20,12 +21,15 @@ use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Requirements;
+use SilverStripe\View\Requirements_Backend;
 use voku\helper\HtmlDomParser;
 
 class SeoDataObjectExtension extends SeoPageExtension {
 
 	public $openaiKey = '';
+
 	public $model = 'gpt-4o-mini';
+
 	public $temperature = 0;
 
 	public $included_dom_selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'strong', 'a', 'p', 'li', 'h6'];
@@ -94,7 +98,7 @@ class SeoDataObjectExtension extends SeoPageExtension {
 			);
 		}
 
-		$description = TextareaField::create('MetaDescription', _t(__CLASS__ . '.META_DESCRIPTION', 'Meta description'))->setMaxLength(160);
+		$description = TextareaField::create('MetaDescription', _t(__CLASS__ . '.META_DESCRIPTION', 'Meta description'));
 
 		if (!$this->owner->MetaDescription) {
 			$description->setDescription(
@@ -276,24 +280,24 @@ class SeoDataObjectExtension extends SeoPageExtension {
 	public function generateSeoAIPromptFromLink(string $link): string {
 		$brandContext = SiteConfig::current_site_config()->ContextPrompt ?? '';
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $link);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		$originalRequirementsBackend = Requirements::backend();
+		Requirements::set_backend(Requirements_Backend::create());
 
-		$html = curl_exec($ch);
-		$curlError = curl_error($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		try {
+			$currentRequest = Controller::curr() ? Controller::curr()->getRequest() : null;
 
-		if ($html === false || empty($html)) {
-			throw new ValidationException('Seiteninhalt konnte nicht geladen werden. cURL-Fehler: ' . $curlError . ' | Link: ' . $link);
+			if (!$currentRequest) {
+				throw new ValidationException('Kein aktiver Request gefunden, Seite kann nicht gerendert werden.');
+			}
+
+			$controller = ContentController::create($this->owner);
+			$html = (string) $controller->handleRequest($currentRequest);
+		} finally {
+			Requirements::set_backend($originalRequirementsBackend);
 		}
 
-		if ($httpCode >= 400) {
-			throw new ValidationException('Seite lieferte HTTP-Status ' . $httpCode . '. Link: ' . $link);
+		if (trim($html) === '') {
+			throw new ValidationException('Seiteninhalt konnte nicht gerendert werden. Link: ' . $link);
 		}
 
 		$domParser = HtmlDomParser::str_get_html($html);

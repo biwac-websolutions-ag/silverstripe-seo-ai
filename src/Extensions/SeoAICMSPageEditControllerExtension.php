@@ -3,11 +3,15 @@
 namespace PlasticStudio\SEOAI\Extensions;
 
 use voku\helper\HtmlDomParser;
+use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Core\Extension;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\View\Parsers\URLSegmentFilter;
+use SilverStripe\View\Requirements;
+use SilverStripe\View\Requirements_Backend;
+
 class SeoAICMSPageEditControllerExtension extends Extension
 {
 
@@ -76,18 +80,32 @@ class SeoAICMSPageEditControllerExtension extends Extension
      *
      * @return String
      */
-    public function generatePrompt($page)
-    {
-        // Get the content for the current page
-        $pageLink = $page->AbsoluteLink();
+	public function generatePrompt($page)
+	{
+		// Get brand context
+		$brandContext = SiteConfig::current_site_config()->ContextPrompt;
 
-        // Get brand context
-        $brandContext = SiteConfig::current_site_config()->ContextPrompt;
+		$originalRequirementsBackend = Requirements::backend();
+		Requirements::set_backend(Requirements_Backend::create());
 
-        // Strip the content of header, footer and nav elements
-        $domParser = HtmlDomParser::str_get_html(file_get_contents($pageLink));
+		try {
+			$controller = ContentController::create($page);
+			$html = (string) $controller->handleRequest($this->owner->getRequest());
+		} finally {
+			Requirements::set_backend($originalRequirementsBackend);
+		}
 
-        $excludedDomElements = $this->excluded_dom_selectors;
+		if (trim($html) === '') {
+			throw new ValidationException('Der Seiteninhalt konnte nicht gerendert werden: ' . $page->Title);
+		}
+
+		$domParser = HtmlDomParser::str_get_html($html);
+
+		if (!$domParser) {
+			throw new ValidationException('Der HTML-Inhalt konnte nicht verarbeitet werden: ' . $page->Title);
+		}
+
+		$excludedDomElements = $this->excluded_dom_selectors;
         foreach ($excludedDomElements as $element) {
             foreach ($domParser->find($element) as $node) {
                 if ($node) {
