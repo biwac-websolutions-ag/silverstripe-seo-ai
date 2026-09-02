@@ -31,3 +31,8 @@ en:
     SOCIAL_IMAGE_DESCRIPTION: 'This image is used when the content is shared on social media platforms. Recommended size: 1200x630px.'
   PlasticStudio\SEOAI\Extensions\SeoAIGridFieldDetailFormExtension:
     GENERATE_SEO_TAGS: 'Generate SEO data'
+  PlasticStudio\SEO\Model\Extension\SeoSiteConfigExtension:
+    USETITLEASMETATITLE: 'Default Meta title to page title when Meta title empty?'
+  PlasticStudio\SEOAI\Extensions\SeoAISiteConfigExtension:
+    CONTEXTPROMPT: 'Brand Context Prompt'
+    CONTEXTPROMPTDESCRIPTION: 'Additional information to give AI about your brand / content for more accurate metadata generation'

@@ -16,8 +16,8 @@ class SeoAISiteConfigExtension extends Extension
     {
         $fields->addFieldToTab(
             'Root.SEO',
-            TextareaField::create('ContextPrompt', 'Brand Context Prompt')
-                ->setDescription('Additional information to give AI about your brand / content for more accurate metadata generation'),
+            TextareaField::create('ContextPrompt', _t(__CLASS__ . '.CONTEXTPROMPT', 'Brand Context Prompt'))
+				->setDescription(_t(__CLASS__ . '.CONTEXTPROMPTDESCRIPTION', 'Additional information to give AI about your brand / content for more accurate metadata generation')),
             'UseTitleAsMetaTitle'
         );
     }

@@ -3,7 +3,8 @@
 namespace PlasticStudio\SEOAI\Extensions;
 
 use voku\helper\HtmlDomParser;
-use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extension;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -11,6 +12,7 @@ use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\View\Parsers\URLSegmentFilter;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\Requirements_Backend;
+use SilverStripe\View\SSViewer;
 
 class SeoAICMSPageEditControllerExtension extends Extension
 {
@@ -21,7 +23,7 @@ class SeoAICMSPageEditControllerExtension extends Extension
 
     public $temperature = 0;
 
-    public $included_dom_selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'strong', 'a', 'p', 'li', 'h6'];
+    public $included_dom_selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'strong', 'p', 'li', 'h6'];
 
     public $excluded_dom_selectors = ['header', 'footer', 'nav'];
 
@@ -86,12 +88,16 @@ class SeoAICMSPageEditControllerExtension extends Extension
 		$brandContext = SiteConfig::current_site_config()->ContextPrompt;
 
 		$originalRequirementsBackend = Requirements::backend();
+		$originalThemes = SSViewer::get_themes();
+
 		Requirements::set_backend(Requirements_Backend::create());
+		SSViewer::set_themes(Config::inst()->get(SSViewer::class, 'themes'));
 
 		try {
-			$controller = ContentController::create($page);
-			$html = (string) $controller->handleRequest($this->owner->getRequest());
+			$response = Director::test(Director::makeRelative($page->Link()), [], null, 'GET');
+			$html = $response->getStatusCode() === 200 ? (string) $response->getBody() : '';
 		} finally {
+			SSViewer::set_themes($originalThemes);
 			Requirements::set_backend($originalRequirementsBackend);
 		}
 
@@ -105,7 +111,7 @@ class SeoAICMSPageEditControllerExtension extends Extension
 			throw new ValidationException('Der HTML-Inhalt konnte nicht verarbeitet werden: ' . $page->Title);
 		}
 
-		$excludedDomElements = $this->excluded_dom_selectors;
+        $excludedDomElements = $this->excluded_dom_selectors;
         foreach ($excludedDomElements as $element) {
             foreach ($domParser->find($element) as $node) {
                 if ($node) {
@@ -114,12 +120,21 @@ class SeoAICMSPageEditControllerExtension extends Extension
             }
         }
 
+        $domParser = HtmlDomParser::str_get_html((string) $domParser);
+
+        if (!$domParser) {
+            throw new ValidationException('Der HTML-Inhalt konnte nach dem Bereinigen nicht verarbeitet werden: ' . $page->Title);
+        }
+
+        $mainNodes = $domParser->find('main');
+        $scope = count($mainNodes) ? $mainNodes[0] : $domParser;
+
         // Find all elements with content tags
         $domContent = [];
 
         $includedDomElements = $this->included_dom_selectors;
         foreach ($includedDomElements as $element) {
-            foreach ($domParser->find($element) as $node) {
+            foreach ($scope->find($element) as $node) {
                 if ($node) {
                     $domContent[] = strip_tags(html_entity_decode($node->innertext()));
                 }
@@ -127,7 +142,7 @@ class SeoAICMSPageEditControllerExtension extends Extension
         }
 
         // Remove empty items
-        $parsedContent = array_filter($domContent);
+        $parsedContent = array_filter(array_map('trim', $domContent));
 
         // Assemble parsed content
         $content = implode(' ', $parsedContent);

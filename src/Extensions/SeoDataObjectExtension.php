@@ -7,7 +7,6 @@ use PlasticStudio\SEO\Admin\SEOAdmin;
 use PlasticStudio\SEO\Forms\MetaPreviewField;
 use PlasticStudio\SEO\Model\Extension\SeoPageExtension;
 use PlasticStudio\SEO\Schema\Builder\SchemaBuilder;
-use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
@@ -22,6 +21,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\Requirements_Backend;
+use SilverStripe\View\SSViewer;
 use voku\helper\HtmlDomParser;
 
 class SeoDataObjectExtension extends SeoPageExtension {
@@ -32,7 +32,7 @@ class SeoDataObjectExtension extends SeoPageExtension {
 
 	public $temperature = 0;
 
-	public $included_dom_selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'strong', 'a', 'p', 'li', 'h6'];
+	public $included_dom_selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'strong', 'p', 'li', 'h6'];
 
 	public $excluded_dom_selectors = ['header', 'footer', 'nav'];
 
@@ -281,18 +281,16 @@ class SeoDataObjectExtension extends SeoPageExtension {
 		$brandContext = SiteConfig::current_site_config()->ContextPrompt ?? '';
 
 		$originalRequirementsBackend = Requirements::backend();
+		$originalThemes = SSViewer::get_themes();
+
 		Requirements::set_backend(Requirements_Backend::create());
+		SSViewer::set_themes(Config::inst()->get(SSViewer::class, 'themes'));
 
 		try {
-			$currentRequest = Controller::curr() ? Controller::curr()->getRequest() : null;
-
-			if (!$currentRequest) {
-				throw new ValidationException('Kein aktiver Request gefunden, Seite kann nicht gerendert werden.');
-			}
-
-			$controller = ContentController::create($this->owner);
-			$html = (string) $controller->handleRequest($currentRequest);
+			$response = Director::test(Director::makeRelative($link), [], null, 'GET');
+			$html = $response->getStatusCode() === 200 ? (string) $response->getBody() : '';
 		} finally {
+			SSViewer::set_themes($originalThemes);
 			Requirements::set_backend($originalRequirementsBackend);
 		}
 
@@ -314,17 +312,26 @@ class SeoDataObjectExtension extends SeoPageExtension {
 			}
 		}
 
+		$domParser = HtmlDomParser::str_get_html((string) $domParser);
+
+		if (!$domParser) {
+			throw new ValidationException('HTML konnte nach dem Bereinigen nicht geparst werden');
+		}
+
+		$mainNodes = $domParser->find('main');
+		$scope = count($mainNodes) ? $mainNodes[0] : $domParser;
+
 		$domContent = [];
 
 		foreach ($this->included_dom_selectors as $element) {
-			foreach ($domParser->find($element) as $node) {
+			foreach ($scope->find($element) as $node) {
 				if ($node) {
 					$domContent[] = strip_tags(html_entity_decode($node->innertext()));
 				}
 			}
 		}
 
-		$content = implode(' ', array_filter($domContent));
+		$content = implode(' ', array_filter(array_map('trim', $domContent)));
 
 		return <<<EOT
 		Your task is to scan the following content gathered from a web page, and generate the following meta-tags which obey the character limits specified:

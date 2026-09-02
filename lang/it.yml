@@ -31,3 +31,8 @@ it:
     SOCIAL_IMAGE_DESCRIPTION: 'Questa immagine viene utilizzata quando il contenuto viene condiviso sulle piattaforme di social media. Dimensione consigliata: 1200x630px.'
   PlasticStudio\SEOAI\Extensions\SeoAIGridFieldDetailFormExtension:
     GENERATE_SEO_TAGS: 'Genera dati SEO'
+  PlasticStudio\SEO\Model\Extension\SeoSiteConfigExtension:
+    USETITLEASMETATITLE: 'Utilizzare il titolo meta predefinito come titolo della pagina quando il titolo meta è vuoto?'
+  PlasticStudio\SEOAI\Extensions\SeoAISiteConfigExtension:
+    CONTEXTPROMPT: 'Contesto del brand per l’IA'
+    CONTEXTPROMPTDESCRIPTION: 'Informazioni aggiuntive da fornire all’IA sul Suo brand o sui Suoi contenuti per consentire una generazione più accurata dei metadati'
