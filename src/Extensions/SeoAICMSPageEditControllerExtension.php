@@ -3,8 +3,6 @@
 namespace PlasticStudio\SEOAI\Extensions;
 
 use voku\helper\HtmlDomParser;
-use SilverStripe\Control\Director;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extension;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -13,6 +11,7 @@ use SilverStripe\View\Parsers\URLSegmentFilter;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\Requirements_Backend;
 use SilverStripe\View\SSViewer;
+use PlasticStudio\SEOAI\Services\SeoAIContentRenderer;
 
 class SeoAICMSPageEditControllerExtension extends Extension
 {
@@ -87,23 +86,7 @@ class SeoAICMSPageEditControllerExtension extends Extension
 		// Get brand context
 		$brandContext = SiteConfig::current_site_config()->ContextPrompt;
 
-		$originalRequirementsBackend = Requirements::backend();
-		$originalThemes = SSViewer::get_themes();
-
-		Requirements::set_backend(Requirements_Backend::create());
-		SSViewer::set_themes(Config::inst()->get(SSViewer::class, 'themes'));
-
-		try {
-			$response = Director::test(Director::makeRelative($page->Link()), [], null, 'GET');
-			$html = $response->getStatusCode() === 200 ? (string) $response->getBody() : '';
-		} finally {
-			SSViewer::set_themes($originalThemes);
-			Requirements::set_backend($originalRequirementsBackend);
-		}
-
-		if (trim($html) === '') {
-			throw new ValidationException('Der Seiteninhalt konnte nicht gerendert werden: ' . $page->Title);
-		}
+		$html = SeoAIContentRenderer::create()->render($page->Link());
 
 		$domParser = HtmlDomParser::str_get_html($html);
 

@@ -20,9 +20,8 @@ use SilverStripe\Forms\ToggleCompositeField;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\Requirements;
-use SilverStripe\View\Requirements_Backend;
-use SilverStripe\View\SSViewer;
 use voku\helper\HtmlDomParser;
+use PlasticStudio\SEOAI\Services\SeoAIContentRenderer;
 
 class SeoDataObjectExtension extends SeoPageExtension {
 
@@ -280,23 +279,7 @@ class SeoDataObjectExtension extends SeoPageExtension {
 	public function generateSeoAIPromptFromLink(string $link): string {
 		$brandContext = SiteConfig::current_site_config()->ContextPrompt ?? '';
 
-		$originalRequirementsBackend = Requirements::backend();
-		$originalThemes = SSViewer::get_themes();
-
-		Requirements::set_backend(Requirements_Backend::create());
-		SSViewer::set_themes(Config::inst()->get(SSViewer::class, 'themes'));
-
-		try {
-			$response = Director::test(Director::makeRelative($link), [], null, 'GET');
-			$html = $response->getStatusCode() === 200 ? (string) $response->getBody() : '';
-		} finally {
-			SSViewer::set_themes($originalThemes);
-			Requirements::set_backend($originalRequirementsBackend);
-		}
-
-		if (trim($html) === '') {
-			throw new ValidationException('Seiteninhalt konnte nicht gerendert werden. Link: ' . $link);
-		}
+		$html = SeoAIContentRenderer::create()->render($link);
 
 		$domParser = HtmlDomParser::str_get_html($html);
 
